@@ -5,7 +5,11 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Build and extend an Azure AI Foundry agent by connecting it to real Azure tools (Azure Functions and Logic Apps). This project provides production-ready abstractions, comprehensive documentation, and step-by-step labs for integrating AI agents with Azure cloud services.
+Build AI agents with the **Microsoft Agent Framework SDK** and connect them to Azure Functions and Logic Apps as decoupled cloud-based tools. This project provides production-ready abstractions, comprehensive documentation, and step-by-step labs following Microsoft's official agent patterns.
+
+## 🎯 Built With Microsoft Agent Framework
+
+This project uses the official **Microsoft Agent Framework SDK** (`azure-ai-projects` and `azure-ai-agents`) to create production-ready AI agents that can leverage Azure cloud services as tools.
 
 ## 📚 Table of Contents
 
@@ -24,40 +28,48 @@ Build and extend an Azure AI Foundry agent by connecting it to real Azure tools 
 
 ## ✨ Features
 
-- **🔧 Azure Functions Integration**: Full-featured client for invoking Azure Functions as AI agent tools
-- **⚡ Logic Apps Orchestration**: Trigger and manage Logic App workflows from AI agents
-- **🛡️ Type Safety**: Comprehensive type hints and Pydantic validation throughout
+- **🤖 Microsoft Agent Framework**: Built with official `azure-ai-projects` SDK
+- **🔧 Azure Functions Integration**: Cloud-based computational tools
+- **⚡ Logic Apps Orchestration**: Cloud-based workflow tools
+- **🏗️ Decoupled Architecture**: Tools deployed independently from agent
+- **🛡️ Type Safety**: Comprehensive type hints and Pydantic validation
 - **📝 Production-Ready Logging**: Structured logging with no print statements
-- **🔐 Security First**: Managed Identity and Function Key authentication support
-- **⚡ Async Support**: Both synchronous and asynchronous APIs for all operations
-- **🧪 Comprehensive Tests**: pytest-based test suite with 90%+ coverage
-- **📖 Step-by-Step Labs**: Interactive Jupyter notebooks for hands-on learning
-- **🎯 PEP8 Compliant**: Black, Ruff, and MyPy enforced code quality
-- **🚀 CI/CD Ready**: GitHub Actions workflows for automated testing and linting
+- **🔐 Security First**: Managed Identity and Function Key authentication
+- **⚡ Async Support**: Both synchronous and asynchronous APIs
+- **🧪 Comprehensive Tests**: pytest-based test suite
+- **📖 Step-by-Step Labs**: Interactive Jupyter notebooks
+- **🎯 PEP8 Compliant**: Black, Ruff, and MyPy enforced
+- **🚀 CI/CD Ready**: GitHub Actions workflows
 
 ## 🏗️ Architecture
 
-The system follows a layered architecture pattern with clear separation of concerns:
+The system follows Microsoft Agent Framework patterns with decoupled cloud tools:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│              AI Foundry Agent (GPT-4)               │
-│                   Tool Registry                      │
-└────────────────────┬────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────┐
-│            Agent Core Framework                      │
-│  ┌─────────────────────┬──────────────────────────┐ │
-│  │  Azure Functions    │   Logic Apps Client      │ │
-│  │      Client         │                          │ │
-│  └─────────────────────┴──────────────────────────┘ │
-└────────────────────┬────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────┐
-│              Azure Cloud Services                    │
-│  ┌──────────────┬──────────────┬─────────────────┐  │
-│  │   Azure      │   Azure      │    Logic App    │  │
-│  │  Function 1  │  Function 2  │   Workflows     │  │
+┌─────────────────────────────────────┐
+│   Microsoft Agent Framework         │
+│   (azure-ai-projects SDK)          │
+│                                     │
+│   ┌─────────────────────────────┐  │
+│   │  AI Agent (GPT-4)           │  │
+│   │  + Tool Registry            │  │
+│   └───────────┬─────────────────┘  │
+└───────────────┼─────────────────────┘
+                │
+         ┌──────┴──────┐
+         │             │
+    ┌────▼─────┐ ┌────▼──────┐
+    │  Azure   │ │  Logic    │
+    │ Function │ │   App     │
+    │ (Cloud)  │ │ (Cloud)   │
+    └──────────┘ └───────────┘
+```
+
+**Key Principles:**
+- **Agent in Isolation**: Created using Microsoft Agent Framework
+- **Decoupled Tools**: Azure Functions and Logic Apps deployed independently
+- **Tool Registration**: Agent learns about cloud tools via registration
+- **Automatic Orchestration**: Agent decides when to invoke tools
 │  └──────────────┴──────────────┴─────────────────┘  │
 └─────────────────────────────────────────────────────┘
 ```
@@ -72,9 +84,9 @@ For detailed architecture information, see:
 
 - Python 3.10 or later
 - Azure subscription
-- Azure Functions App (optional for local development)
-- Azure Logic App (optional for local development)
-- Azure OpenAI or AI Foundry endpoint (for agent features)
+- **Azure AI Foundry project** (create at [ai.azure.com](https://ai.azure.com))
+- Azure Functions deployed (optional for labs)
+- Azure Logic Apps deployed (optional for labs)
 
 ### Installation
 
@@ -83,39 +95,58 @@ For detailed architecture information, see:
 git clone https://github.com/pablosalvador10/northwestern-msai-foundry-agent-extension.git
 cd northwestern-msai-foundry-agent-extension
 
-# Install dependencies
+# Install dependencies (includes azure-ai-projects SDK)
 pip install -r requirements.txt
 ```
 
-### Basic Usage
+### Basic Usage with Microsoft Agent Framework
 
 ```python
-from src.abstractions.azure_functions import FunctionConfig, AzureFunctionsClient
-from src.abstractions.logic_apps import LogicAppConfig, LogicAppsClient
 from src.agent_core import AgentConfig, FoundryAgent
+from src.abstractions.azure_functions import FunctionConfig
+from src.abstractions.logic_apps import LogicAppConfig
 
-# Configure Azure Function
-function_config = FunctionConfig(
-    function_url="https://your-app.azurewebsites.net/api/your-function",
-    function_key="your-function-key",
-    timeout=30
-)
-
-# Create client and invoke function
-client = AzureFunctionsClient(function_config)
-result = client.invoke_function({"data": "test"})
-print(result)
-
-# Configure and use with AI agent
+# Step 1: Create an agent using Microsoft Agent Framework
 agent_config = AgentConfig(
-    endpoint="https://your-endpoint.openai.azure.com",
-    api_key="your-api-key",
-    model_name="gpt-4"
+    project_endpoint="https://your-project.api.azureml.ms",  # Your AI Foundry project
+    model_name="gpt-4",  # Your deployed model
+    instructions="You are a helpful assistant with Azure tools."
 )
 
 agent = FoundryAgent(agent_config)
-agent.register_azure_function("data_processor", function_config)
-response = agent.run("Process this data: [1, 2, 3, 4, 5]")
+
+# Step 2: Register Azure Function as a tool (deployed in cloud)
+function_config = FunctionConfig(
+    function_url="https://your-app.azurewebsites.net/api/process",
+    function_key="your-key"
+)
+
+agent.register_azure_function_tool(
+    name="process_data",
+    config=function_config,
+    description="Processes numerical data and returns statistics"
+)
+
+# Step 3: Register Logic App as a tool (deployed in cloud)
+logic_config = LogicAppConfig(
+    workflow_url="https://prod-xx.logic.azure.com:443/workflows/..."
+)
+
+agent.register_logic_app_tool(
+    name="send_notification",
+    config=logic_config,
+    description="Sends email notifications"
+)
+
+# Step 4: Create the agent with registered tools
+agent_id = agent.create_agent(name="My Agent")
+
+# Step 5: Run the agent - it will automatically use tools as needed
+response = agent.run_agent(
+    agent_id,
+    "Process these numbers: 10, 20, 30, 40, 50 and email the results"
+)
+print(response)
 ```
 
 ## 📁 Project Structure
