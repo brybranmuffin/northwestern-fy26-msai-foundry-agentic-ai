@@ -1,5 +1,6 @@
-# Azure AI and Core SDKs
-azure-ai-inference>=1.0.0b5
+# Azure AI and Core SDKs - Microsoft Agent Framework
+azure-ai-projects>=1.0.0b1
+azure-ai-agents>=1.0.0b1
 azure-identity>=1.19.0
 azure-core>=1.30.0
 
