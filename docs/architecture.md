@@ -1,124 +1,122 @@
 # Architecture Overview
 
-## System Architecture
+## The Problem
 
-The Azure AI Foundry Agent Extension provides a modular architecture for integrating AI agents with Azure cloud services. The system enables intelligent agents to interact with Azure Functions and Logic Apps as tools, creating powerful automation workflows.
+You're a graduate student juggling research, coursework, and job applications. You need an assistant that can:
 
-```mermaid
-graph TB
-    subgraph "AI Layer"
-        Agent[AI Foundry Agent<br/>GPT-4/3.5]
-        Tools[Tool Registry]
-    end
-    
-    subgraph "Abstraction Layer"
-        AFClient[Azure Functions<br/>Client]
-        LAClient[Logic Apps<br/>Client]
-        Core[Agent Core<br/>Framework]
-    end
-    
-    subgraph "Azure Services"
-        AF1[Azure Function<br/>Data Processor]
-        AF2[Azure Function<br/>Integration Service]
-        LA[Logic App<br/>Workflow Orchestrator]
-    end
-    
-    subgraph "External Systems"
-        API[External APIs]
-        DB[(Databases)]
-        Services[Third-party<br/>Services]
-    end
-    
-    Agent --> Tools
-    Tools --> Core
-    Core --> AFClient
-    Core --> LAClient
-    
-    AFClient --> AF1
-    AFClient --> AF2
-    LAClient --> LA
-    
-    AF1 --> DB
-    AF2 --> API
-    LA --> Services
-    
-    style Agent fill:#4A90E2,stroke:#2E5C8A,color:#fff
-    style Tools fill:#50C878,stroke:#2E7D4E,color:#fff
-    style Core fill:#9B59B6,stroke:#6C3483,color:#fff
-    style AFClient fill:#E67E22,stroke:#A04000,color:#fff
-    style LAClient fill:#E67E22,stroke:#A04000,color:#fff
+- **Analyze documents** — summarize papers, extract key insights from readings
+- **Crunch numbers** — run statistical analyses, process datasets
+- **Keep you informed** — send email alerts when deadlines approach or tasks complete
+
+You decide a **single AI agent** can handle all of this. But here's the challenge: some tasks are simple (text processing), while others require real computation (data analysis) or external integrations (email notifications).
+
+**How do you build this?**
+
+## The Solution: One Agent, Multiple Tools
+
+We'll build a **Graduate Research Assistant** — an AI agent hosted in **Azure AI Foundry** that can:
+
+| Capability | Implementation | Why? |
+|------------|----------------|------|
+| Summarize text, answer questions | **In-process function** | Simple, runs inside the agent |
+| Analyze data, call external APIs | **Azure Function** | Needs compute, scales independently |
+| Send emails, trigger workflows | **Logic App** | Built-in connectors, no code needed |
+
+The key insight: **the agent lives in the cloud (Azure AI Foundry), but its tools can live anywhere**. Some tools run inside the agent, others run as independent cloud services.
+
+## Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AZURE AI FOUNDRY                             │
+│                     (Your Agent Runtime)                            │
+│                                                                     │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │                                                              │  │
+│   │              🤖 Graduate Research Assistant                  │  │
+│   │                      (GPT-4 Agent)                          │  │
+│   │                                                              │  │
+│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │  │
+│   │   │ In-Process   │  │   Azure      │  │   Logic      │     │  │
+│   │   │ Functions    │  │   Function   │  │    App       │     │  │
+│   │   │              │  │   Tool       │  │    Tool      │     │  │
+│   │   │ • summarize  │  │              │  │              │     │  │
+│   │   │ • extract    │  │              │  │              │     │  │
+│   │   └──────────────┘  └──────┬───────┘  └──────┬───────┘     │  │
+│   │         ▲                  │                  │              │  │
+│   │         │                  │                  │              │  │
+│   │    runs inside             │                  │              │  │
+│   │                            │                  │              │  │
+│   └────────────────────────────┼──────────────────┼──────────────┘  │
+│                                │                  │                  │
+└────────────────────────────────┼──────────────────┼──────────────────┘
+                                 │                  │
+                    HTTPS call   │                  │   HTTPS call
+                                 ▼                  ▼
+              ┌──────────────────────┐    ┌──────────────────────┐
+              │                      │    │                      │
+              │    AZURE FUNCTION    │    │     LOGIC APP        │
+              │                      │    │                      │
+              │  • analyze_data()    │    │  • send_email()      │
+              │  • call_api()        │    │  • notify_slack()    │
+              │  • process_csv()     │    │  • trigger_workflow()│
+              │                      │    │                      │
+              │   Runs independently │    │   Runs independently │
+              │   Scales on demand   │    │   Visual designer    │
+              │   Pay per execution  │    │   300+ connectors    │
+              │                      │    │                      │
+              └──────────────────────┘    └──────────────────────┘
 ```
 
-## Component Descriptions
+## Why This Architecture?
 
-### AI Layer
-- **AI Foundry Agent**: The core AI agent powered by Azure OpenAI (GPT-4 or GPT-3.5-turbo)
-- **Tool Registry**: Manages available tools and their configurations
+### Why Azure AI Foundry?
 
-### Abstraction Layer
-- **Agent Core Framework**: Orchestrates agent behavior and tool invocation
-- **Azure Functions Client**: Provides HTTP-based integration with Azure Functions
-- **Logic Apps Client**: Enables workflow triggering and management
+| Benefit | Description |
+|---------|-------------|
+| **Managed Runtime** | Microsoft handles infrastructure, scaling, security |
+| **Built-in Agent Framework** | Use the official SDK (`azure-ai-projects`) |
+| **Model Access** | Deploy GPT-4, GPT-4o, or other models easily |
+| **Enterprise Ready** | Authentication, monitoring, compliance built-in |
 
-### Azure Services
-- **Data Processor Function**: Handles data transformation and processing tasks
-- **Integration Service Function**: Manages external service integrations
-- **Workflow Orchestrator**: Logic App for complex, multi-step workflows
+### Why Decouple Tools?
 
-### External Systems
-Integration points for databases, APIs, and third-party services
+| Benefit | Description |
+|---------|-------------|
+| **Independent Scaling** | Heavy computation scales separately from the agent |
+| **Language Flexibility** | Azure Functions can run Python, Node.js, C#, etc. |
+| **Reusability** | Same function can serve multiple agents or apps |
+| **Easier Testing** | Test tools in isolation before connecting to agent |
+| **Cost Efficiency** | Pay only when tools are invoked |
 
-## Data Flow
+### When to Use What?
 
-1. **User Input** → AI Foundry Agent receives natural language requests
-2. **Tool Selection** → Agent identifies appropriate Azure tools to use
-3. **Tool Invocation** → Abstraction layer calls Azure Functions or Logic Apps
-4. **Service Execution** → Azure services process requests and interact with external systems
-5. **Response Aggregation** → Results flow back through the abstraction layer
-6. **AI Response** → Agent synthesizes results into natural language response
+| Tool Type | Use When... | Example |
+|-----------|-------------|---------|
+| **In-process function** | Simple logic, no external calls | Text formatting, basic calculations |
+| **Azure Function** | Need compute, external APIs, or complex processing | Data analysis, API integrations |
+| **Logic App** | Need workflows, notifications, or built-in connectors | Email alerts, Slack messages, file operations |
 
-## Security Architecture
+## How It Works
 
-```mermaid
-graph LR
-    subgraph "Authentication Methods"
-        MI[Managed Identity]
-        KEY[Function Keys]
-        AAD[Azure AD]
-    end
-    
-    subgraph "Service Communication"
-        Agent[Agent Core]
-        Azure[Azure Services]
-    end
-    
-    MI --> Agent
-    KEY --> Agent
-    AAD --> Agent
-    Agent -->|HTTPS| Azure
-    
-    style MI fill:#50C878,stroke:#2E7D4E,color:#fff
-    style KEY fill:#E67E22,stroke:#A04000,color:#fff
-    style AAD fill:#4A90E2,stroke:#2E5C8A,color:#fff
-```
+1. **User asks**: "Analyze my survey data and email me the results"
 
-### Security Features
-- **Managed Identity**: Passwordless authentication for Azure-to-Azure communication
-- **Function Keys**: Secure HTTP endpoint access
-- **Azure AD Integration**: Enterprise-grade identity management
-- **HTTPS Only**: All communications encrypted in transit
-- **Secrets Management**: Environment variables and Azure Key Vault integration
+2. **Agent reasons**: "I need to (1) analyze data → Azure Function, (2) send email → Logic App"
 
-## Scalability Considerations
+3. **Agent calls Azure Function**: 
+   - HTTP POST to `https://my-function.azurewebsites.net/api/analyze`
+   - Sends the data, receives statistical summary
 
-- **Horizontal Scaling**: Azure Functions scale automatically based on demand
-- **Async Operations**: Non-blocking I/O for high-concurrency scenarios
-- **Connection Pooling**: Efficient resource utilization
-- **Timeout Management**: Configurable timeouts prevent resource exhaustion
+4. **Agent calls Logic App**:
+   - HTTP POST to `https://prod-xx.logic.azure.com/workflows/...`
+   - Triggers email workflow with the results
 
-## Monitoring and Observability
+5. **Agent responds**: "Done! I analyzed your data (mean: 4.2, std: 0.8) and sent the results to your email."
 
-- **Structured Logging**: Comprehensive logging at all layers
-- **Azure Monitor Integration**: Built-in telemetry and diagnostics
-- **Application Insights**: Performance monitoring and alerting
-- **Log Levels**: Configurable verbosity (DEBUG, INFO, WARNING, ERROR)
+## Next Steps
+
+Ready to build? Head to the notebooks:
+
+1. **[Lab 1](../notebooks/lab1_azure_functions.ipynb)** — Create an Azure Function
+2. **[Lab 2](../notebooks/lab2_logic_apps.ipynb)** — Create a Logic App  
+3. **[Lab 3](../notebooks/lab3_complete_agent.ipynb)** — Wire it all together in Azure AI Foundry
