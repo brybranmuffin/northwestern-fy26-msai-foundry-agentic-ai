@@ -25,6 +25,11 @@ We'll build a **Graduate Research Assistant** — an AI agent hosted in **Azure 
 The key insight: **the agent lives in the cloud (Azure AI Foundry), but its tools can live anywhere**. Some tools run inside the agent, others run as independent cloud services.
 
 ## Architecture Diagram
+- Runtime is not related to the speed or efficiency, but where it is being run (ChatGPT's runtime is on some server, my phone's calculator's runtime is on the phone)
+- Tools are computation, not agent, dont require agent to process
+- MCP - moving function inside agent to outside agent
+- - MCP runtime is outside of agent
+  - Choose Azure Functions or Logic App
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
