@@ -44,7 +44,12 @@ In Labs 4-5, you'll build an MCP server with Azure Functions and connect it to a
 
 ## Assignments
 
-See the full assignment details: **[Week 3 Assignment](docs/asigments.md)**
+See the full assignment details: **[Assignments](docs/asigments.md)**
+
+| Week | Topic | Lab |
+|------|-------|-----|
+| Week 3 | Single Agent + External Tools | Labs 1-5 |
+| Week 4 | Multi-Agent Orchestration | Lab 6 |
 
 ## Labs (Divide and Conquer)
 
@@ -67,19 +72,37 @@ Connect agents to tools via the Model Context Protocol.
 | [Lab 4: MCP Server](notebooks/lab4_mcp_server_azure_functions.ipynb) | Build an MCP server using Azure Functions |
 | [Lab 5: Agent + MCP](notebooks/lab5_single_agent_mcp_integration.ipynb) | Connect an agent to MCP servers (local & remote) |
 
+### Part 3: Multi-Agent Systems (Lab 6)
+Coordinate multiple agents to solve complex problems.
+
+| Lab | What You'll Build |
+|-----|-------------------|
+| [Lab 6: Multi-Agent Orchestration](notebooks/lab6_multi_agent_orchestration.ipynb) | Implement 5 orchestration patterns (Concurrent, Sequential, Group Chat, Magentic, Handoff) |
+
 **Learning Path:**
 ```
 ┌─────────────────────────────────────┐     ┌─────────────────────────────────┐
-│  Part 1: HTTP Tools                 │     │  Part 2: MCP                    │
+│  Part 1: HTTP Tools (Week 3)        │     │  Part 2: MCP (Week 3)           │
 │                                     │     │                                 │
 │  Lab 1 (Azure Function) ──┐         │     │  Lab 4 (MCP Server)             │
 │                           ├─▶ Lab 3 │     │         │                       │
 │  Lab 2 (Logic App) ───────┘         │     │         ▼                       │
 │                                     │     │  Lab 5 (Agent + MCP)            │
 └─────────────────────────────────────┘     └─────────────────────────────────┘
+                      │                                   │
+                      └───────────────┬───────────────────┘
+                                      ▼
+                    ┌─────────────────────────────────────┐
+                    │  Part 3: Multi-Agent (Week 4)       │
+                    │                                     │
+                    │  Lab 6 (Multi-Agent Orchestration)  │
+                    │  • Concurrent, Sequential           │
+                    │  • Group Chat, Magentic, Handoff    │
+                    │  • Custom WorkflowBuilder           │
+                    └─────────────────────────────────────┘
 ```
 
-> **Tip**: Part 1 teaches HTTP tool integration. Part 2 teaches MCP — a standardized protocol for tool discovery and execution.
+> **Tip**: Part 1 teaches HTTP tool integration. Part 2 teaches MCP. Part 3 teaches multi-agent coordination.
 
 ## Getting Started
 

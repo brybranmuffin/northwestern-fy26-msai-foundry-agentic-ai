@@ -51,3 +51,67 @@ Both approaches use Azure Functions — the difference is *how* your agent conne
 1. **Architecture diagram** — Show your agent, tools, and how they connect
 2. **Brief reasoning** — Why did you choose this approach? What are the benefits?
 3. **Working demo** — Screenshot or recording of your agent using the tool
+
+
+## Week 4: Multi-Agent Orchestration
+
+This week you'll extend your Week 3 single agent into a **multi-agent system** using orchestration patterns from the Microsoft Agent Framework.
+
+**Start here**: [Lab 6: Multi-Agent Orchestration](../notebooks/lab6_multi_agent_orchestration.ipynb) — Learn the 5 orchestration patterns before starting the assignment.
+
+### Deliverables
+
+| Component | Points |
+|-----------|--------|
+| Architecture diagram showing multi-agent topology | 10 pts |
+| Pattern choice justification | 10 pts |
+| Working multi-agent implementation | 10 pts |
+
+**Total: 30 points**
+
+### Your Task
+
+Take the **tools you built in Week 3** and create a **multi-agent system** that uses them more effectively.
+
+#### What You Have from Week 3
+
+| Tool | Type | What It Does |
+|------|------|--------------|
+| `get_student_grades` | Local function | Query student grade data |
+| `get_upcoming_deadlines` | Local function | Query assignment deadlines |
+| `send_email_notification` | Logic App | Send email via workflow |
+| `analyze_data` | Azure Function | Perform data analysis |
+
+#### What You'll Build
+
+Transform your single agent into **specialized agents** working together:
+
+| Agent | Specialization | Tools |
+|-------|----------------|-------|
+| **Data Agent** | Data retrieval and analysis | `get_student_grades`, `get_upcoming_deadlines`, `analyze_data` |
+| **Communication Agent** | Notifications and messaging | `send_email_notification` |
+| **Advisor Agent** | Synthesizes insights, gives advice | Uses other agents' outputs |
+
+### Choose Your Pattern
+
+Based on what you learned in Lab 6, pick the orchestration pattern that fits:
+
+| Pattern | When to Use for This Task |
+|---------|---------------------------|
+| **Sequential** | Data Agent → Advisor Agent → Communication Agent (pipeline) |
+| **Concurrent** | Get grades AND deadlines simultaneously (parallel data) |
+| **Group Chat** | Agents discuss student situation iteratively |
+| **Handoff** | Advisor triages, hands off to Data or Communication as needed |
+| **Custom (WorkflowBuilder)** | When none of the above fit your needs |
+
+### What to Submit
+
+1. **Architecture diagram** — Show your agents, their specializations, and how they connect
+2. **Pattern justification** — 
+    1. **Why multi-agent?** What limitation of your Week 3 single agent does this solve?
+    2. **Pattern choice**: Why did you pick this orchestration pattern over the others?
+    3. **Trade-offs**: What are the downsides of your multi-agent approach?
+    4. **Real-world**: Where would you use this pattern in a production system?
+3. **Working implementation** (Optional) — Code/video that demonstrates your multi-agent system
+
+---

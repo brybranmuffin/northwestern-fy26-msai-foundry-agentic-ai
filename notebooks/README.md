@@ -19,6 +19,14 @@ Connect agents to tools via the Model Context Protocol.
 | [Lab 4](lab4_mcp_server_azure_functions.ipynb) | MCP Server using Azure Functions |
 | [Lab 5](lab5_single_agent_mcp_integration.ipynb) | AI Agent connected to MCP servers |
 
+## Part 3: Multi-Agent Systems
+
+Orchestrate multiple agents to solve complex tasks collaboratively.
+
+| Lab | What You Build |
+|-----|----------------|
+| [Lab 6](lab6_multi_agent_orchestration.ipynb) | Multi-agent orchestration patterns |
+
 ## Learning Path
 
 ```
@@ -30,8 +38,24 @@ Connect agents to tools via the Model Context Protocol.
 │  Lab 2 (Logic App) ───────┘         │     │         ▼                       │
 │                                     │     │  Lab 5 (Agent + MCP)            │
 └─────────────────────────────────────┘     └─────────────────────────────────┘
+                    │                                   │
+                    └───────────────┬───────────────────┘
+                                    │
+                                    ▼
+                    ┌─────────────────────────────────────┐
+                    │  Part 3: Multi-Agent Systems        │
+                    │                                     │
+                    │  Lab 6 (Multi-Agent Orchestration)  │
+                    │    • Concurrent Pattern             │
+                    │    • Sequential Pattern             │
+                    │    • Group Chat Pattern             │
+                    │    • Magentic Pattern               │
+                    │    • Handoff Pattern                │
+                    └─────────────────────────────────────┘
 ```
 
 **Part 1** (Labs 1-3): Build tools as HTTP endpoints, then connect them to an agent.
 
 **Part 2** (Labs 4-5): Build an MCP server, then connect an agent using the MCP protocol.
+
+**Part 3** (Lab 6): Extend single agents into multi-agent systems using orchestration patterns.
